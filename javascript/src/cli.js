@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 const resources = require('./Resources')
 const readline = require('readline').createInterface({
   input: process.stdin,

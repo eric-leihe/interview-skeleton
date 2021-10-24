@@ -1,5 +1,8 @@
 const abilities = require('./resources/Abilities')
+const Client = require('./Client')
 const Resource = require('./Resource')
+
+Resource.use(Client)
 
 const resources = {
   registry: {},

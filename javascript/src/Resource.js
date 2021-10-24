@@ -8,6 +8,10 @@ const Resource = function (resourceName, commands) {
   }
 }
 
+Resource.use = function (client) {
+  Resource.prototype.client = client
+}
+
 Resource.prototype.getName = function () {
   return this.name
 }
