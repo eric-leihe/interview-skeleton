@@ -2,10 +2,17 @@
   "name": "javascript",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "cli.js",
+  "jest": {
+    "verbose": true,
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    }
+  },
   "scripts": {
     "cli": "./src/cli.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "cli2": "./src/cli2.js",
+    "test": "node node_modules/.bin/jest"
   },
   "keywords": [],
   "author": "",
@@ -13,5 +20,9 @@
   "devDependencies": {
     "jest": "^27.3.1",
     "rollup": "^2.58.0"
+  },
+  "dependencies": {
+    "i": "^0.3.7",
+    "readcommand": "^0.4.0"
   }
 }

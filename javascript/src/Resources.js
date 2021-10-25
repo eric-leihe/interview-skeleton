@@ -1,4 +1,6 @@
 const abilities = require('./resources/Abilities')
+const incidents = require('./resources/Incidents')
+const users = require('./resources/Users')
 const Client = require('./Client')
 const Resource = require('./Resource')
 
@@ -27,7 +29,12 @@ const commandsResource = Resource('commands', {
   }
 })
 
-resources.register(abilities)
+// Local
 resources.register(commandsResource)
+
+// Remote Resources
+resources.register(abilities)
+resources.register(incidents)
+resources.register(users)
 
 module.exports = resources

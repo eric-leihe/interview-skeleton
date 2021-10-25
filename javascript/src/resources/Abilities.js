@@ -2,19 +2,31 @@ const Resource = require('../Resource')
 
 const resource = Resource('abilities', {
   list: {
-    path: '', // Relative path to the resource base URL
     desc: "List all of your account's abilities, by name.",
     execute: function (options = {}, params, callback) {
-      const commandUrl = new URL(this.path, resource.baseUrl()).toString()
-      resource.client.http_get(commandUrl, options, callback)
+      resource.client.http_get(resource.baseUrl(), options, params, callback)
     }
   },
   test: {
-    path: '', // Relative path to the resource base URL
-    desc: "List all of your account's abilities, by name.",
+    desc: "Test whether your account has a given ability.",
     execute: function (options = {}, params, callback) {
-      const commandUrl = new URL(`${params[0]}`, resource.baseUrl()).toString()
-      resource.client.http_get(commandUrl, options, callback)
+      const commandUrl = new URL(`${params.path}`, `${resource.baseUrl()}/`).toString()
+
+      const responseInterpretor = (err, data) => {
+        if (err) {
+          switch (err.httpStatusCode) {
+            case 404:
+              callback(Error(`The requested resource was not found.`), data)
+              break
+            default:
+              callback(err, data)
+          }
+        } else {
+          callback(err, 'The account has the requested ability.')
+        }
+      }
+
+      resource.client.http_get(commandUrl, options, params, responseInterpretor)
     }
   }
 })
