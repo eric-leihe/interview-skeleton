@@ -18,6 +18,12 @@ const resource = Resource('incidents', 'incident', {
     execute: function (options = {}, params, callback) {
       resource.client.http_post(resource.getTargetUrl(params), options, params.payload, callback)
     }
+  },
+  update: {
+    desc: 'Update a incident',
+    execute: function (options = {}, params, callback) {
+      resource.client.http_put(resource.getTargetUrl(params), options, params.payload, callback)
+    }
   }
 })
 

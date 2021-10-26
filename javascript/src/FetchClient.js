@@ -59,7 +59,7 @@ module.exports = {
     const baseUrl = new URL(url)
 
     console.log("\nSending 'POST' request to URL : " + url)
-    
+
     fetch(baseUrl.toString(), _options)
       .then(res => Promise.all([res.status, res.json()]))
       .then(([httpStatusCode, jsonData]) => {
@@ -75,15 +75,33 @@ module.exports = {
       .catch(err => callback(err))
   },
 
-  http_put: function (url, options, callback) {
-    
+  http_put: function (url, options, payload, callback) {
+    const _options = {
+      method: 'PUT',
+      headers: Object.assign(genericHeaders, options.headers),
+      body: JSON.stringify(payload || {})
+    }
+
+    const baseUrl = new URL(url)
+
+    console.log("\nSending 'PUT' request to URL : " + url)
+
+    fetch(baseUrl.toString(), _options)
+      .then(res => Promise.all([res.status, res.json()]))
+      .then(([httpStatusCode, jsonData]) => {
+        let responseError = null
+        if (httpStatusCode >= 400) {
+          responseError = {
+            httpStatusCode,
+            message: `Did not get an OK from this server. Code: ${httpStatusCode}`
+          }
+        }
+        callback(responseError, jsonData)
+      })
+      .catch(err => callback(err))
   },
 
   http_delete: function (url, options, callback) {
-    
-  },
-
-  http_option: function (url, options, callback) {
     
   }
 }

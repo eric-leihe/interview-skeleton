@@ -70,15 +70,20 @@ module.exports = {
     request.end()
   },
 
-  http_put: function (url, options, callback) {
-    
+  http_put: function (url, options, payload, callback) {
+    const _options = {
+      method: 'PUT',
+      headers: Object.assign(genericHeaders, options.headers)
+    }
+
+    console.log("\nSending 'PUT' request to URL : " + url)
+    let request = startRequest(url, _options, callback)
+
+    request.write(JSON.stringify(payload))
+    request.end()
   },
 
   http_delete: function (url, options, callback) {
-    
-  },
-
-  http_option: function (url, options, callback) {
     
   }
 }
