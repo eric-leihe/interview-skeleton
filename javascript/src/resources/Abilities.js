@@ -1,16 +1,16 @@
 const Resource = require('../Resource')
 
-const resource = Resource('abilities', {
+const resource = Resource('abilities', 'ability', {
   list: {
     desc: "List all of your account's abilities, by name.",
     execute: function (options = {}, params, callback) {
-      resource.client.http_get(resource.baseUrl(), options, params, callback)
+      resource.client.http_get(resource.getTargetUrl(params), options, callback)
     }
   },
   test: {
     desc: "Test whether your account has a given ability.",
     execute: function (options = {}, params, callback) {
-      const commandUrl = new URL(`${params.path}`, `${resource.baseUrl()}/`).toString()
+      // const commandUrl = new URL(`${params.path}`, `${resource.baseUrl()}/`).toString()
 
       const responseInterpretor = (err, data) => {
         if (err) {
@@ -26,7 +26,7 @@ const resource = Resource('abilities', {
         }
       }
 
-      resource.client.http_get(commandUrl, options, params, responseInterpretor)
+      resource.client.http_get(resource.getTargetUrl(params), options, responseInterpretor)
     }
   }
 })

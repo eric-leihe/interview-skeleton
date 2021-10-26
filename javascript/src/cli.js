@@ -1,48 +1,51 @@
 #!/usr/bin/env node
-
-const resources = require('./Resources')
-
-const readline = require('readline').createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
-
-function get_input_line(callback) {
-  readline.question('PagerDuty/>', input => {
-    if (input) {
-      callback(input);
-    } else {
-      get_input_line(callback)
-    }
-  })
-}
-
-console.log("This is where the execution code can be added")
+const readcommand = require('readcommand');
+const httpClient = require('./HttpClient')
+const endpoints = require('./Endpoints')
+const paramParser = require('./ParamParser')
+endpoints.init(httpClient)
 
 
-const inputCallback = (input) => {
-  try {
-    const [resourceName, command, ...params] = input.split(/\s/)
+var sigints = 0;
 
-    const resource = resources.get(resourceName)
-
-    if (!resource) {
-      throw Error(`Unknown resource '${resource}'. Please use 'commands list' to check all supported resources.`)
-    }
-
-    resource.execute(command, { headers: { 'Authorization': 'Token token=y_NbAkKc66ryYTWUXYEu' } }, params, (err, data) => {
-      if (err != null) {
-        console.error(`Encountered an error trying to make a request: ${err.message}. \n`, data);
+readcommand.loop(function(err, args, str, next) {
+  if (err && err.code !== 'SIGINT') {
+      throw err;
+  } else if (err) {
+      if (sigints === 1) {
+          process.exit(0);
       } else {
-        console.log("Received data: ", data)
+          sigints++;
+          console.log('Press ^C again to exit.');
+          return next();
       }
-      get_input_line(inputCallback)
-    })
-  } catch (e) {
-    console.error("Encountered an error trying to execute command: \n", e)
-    get_input_line(inputCallback)
-  } 
-}
+  } else {
+      sigints = 0;
+  }
 
-get_input_line(inputCallback)
+  const inputCallback = (input) => {
+    try {
+      if (!input || input.length === 0) return next();
 
+      const [resourceName, command, ...params] = input
+
+      const resource = endpoints.get(resourceName)
+
+      if (!resource) {
+        throw Error(`Unknown resource '${resource}'. Please use 'commands list' to check all supported resources.`)
+      }
+
+      resource.execute(command, { headers: { 'Authorization': 'Token token=u+KQ19ypt4SsAs6-8zLg' } }, paramParser(params), (err, data) => {
+        if (err != null) {
+          console.error(`Encountered an error trying to make a request: ${err.message}. \n`, data);
+        } else {
+          console.log(data)
+        }
+        return next()
+      })
+    } catch (e) {
+      console.error("Encountered an error trying to execute command: \n", e)
+    } 
+  }
+  return inputCallback(args);
+});

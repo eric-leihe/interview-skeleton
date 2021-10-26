@@ -11,18 +11,28 @@
   },
   "scripts": {
     "cli": "./src/cli.js",
-    "cli2": "./src/cli2.js",
-    "test": "node node_modules/.bin/jest"
+    "test": "node node_modules/.bin/jest",
+    "build": "rollup -c rollup.config.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/cli": "^7.15.7",
+    "@babel/core": "^7.15.8",
+    "@babel/eslint-parser": "^7.15.8",
+    "@babel/preset-env": "^7.15.8",
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-node-resolve": "^13.0.6",
+    "browserify": "^17.0.0",
+    "eslint": "^8.1.0",
     "jest": "^27.3.1",
-    "rollup": "^2.58.0"
+    "rollup": "^2.58.0",
+    "rollup-plugin-polyfill-node": "^0.7.0",
+    "rollup-plugin-terser": "^7.0.2"
   },
   "dependencies": {
-    "i": "^0.3.7",
+    "node-fetch": "^3.0.0",
     "readcommand": "^0.4.0"
   }
 }

@@ -1,10 +1,11 @@
 
-const Resource = function (resourceName, commands) {
+const Resource = function (name, singlularName, commands) {
   if (this instanceof Resource) {
-    this.name = resourceName
+    this.name = name
+    this.singlularName = singlularName 
     this.commands = commands
   } else {
-    return new Resource(resourceName, commands)
+    return new Resource(name, singlularName, commands)
   }
 }
 
@@ -26,84 +27,44 @@ Resource.prototype.commandNames = function () {
   return Object.keys(this.commands)
 }
 
+/**
+ * Build target URL from the resource's base URL and the params
+ * If there is a path property in params or a query property in params, they will be combined
+ * with the base URL to create a target URL.
+ *  
+ * @param {object} params - { path: '<path-to-resource>', query: [...] }
+ * @returns {URL} targetUrl
+ */
+Resource.prototype.getTargetUrl = function (params) {
+  const targetUrl = params.path ? new URL(params.path, `${this.baseUrl()}/`) : new URL(this.baseUrl())
+
+  // Add Query paramters into the URL
+  if (params.query && params.query.length > 0) {
+    targetUrl.search += (Object.keys(targetUrl.searchParams).length === 0 ? '?' : '&') + params.query.join('&')
+  }
+
+  return targetUrl
+}
+
 Resource.prototype.execute = function (command, options, params, cb) {
-  const commandHandler = this.commands[command]
+  try {
+    const commandHandler = this.commands[command]
 
-  if (!commandHandler) {
-    throw Error(`Unrecognized command: '${command}'. This resource only supports commands: ${JSON.stringify(this.commandNames())}`)
-  }
-
-  // TODO: extract query, payload from params
-  const parsedParams = {
-    path: extractPath(params),
-    query: extractQuery(params),
-    payload: extractPayload(params)
-  }
-  
-  commandHandler.execute(options, parsedParams, cb)
-}
-
-function extractPayload(params) {
-  if (!params || params.length === 0) return null
-  
-  let payloadParamStart = false
-  for (let element of params) {
-    if (element === '-d' || element === '--data') {
-      payloadParamStart = true
-      continue
-    } else {
-      if (payloadParamStart === true && element.startsWith('-')) { // This is a very naive implementation for demo purpose
-        break;
-      }
+    if (!commandHandler) {
+      throw Error(`Unrecognized command: '${command}'. This resource only supports commands: ${JSON.stringify(this.commandNames())}`)
     }
 
-    if (payloadParamStart) {
-      return JSON.parse(element)
+    const headers = params.headers
+    if (headers) {
+      options.headers = Object.assign(options.headers, headers)
     }
+
+    commandHandler.execute(options, params, cb)
+  } catch (err) {
+    cb(err) 
   }
 }
 
-function extractQuery(params) {
-  let queries = []
 
-  if(!params || params.length === 0) return queries
-
-  let queryParamStart = false
-  for (let element of params) {
-    if (element === '-q' || element === '--query') {
-      queryParamStart = true
-      continue
-    } else {
-      if (queryParamStart === true && element.startsWith('-')) { // This is a very naive implementation for demo purpose
-        break;
-      }
-    }
-
-    if (queryParamStart) {
-      queries.push(element)
-    }
-  }
-  return queries
-}
-
-function extractPath(params) {
-  if(!params || params.length === 0) return ''
-
-  let pathParamStart = false
-  for (let element of params) {
-    if (element === '-p' || element === '--path') {
-      pathParamStart = true
-      continue
-    } else {
-      if (pathParamStart === true && element.startsWith('-')) { // This is a very naive implementation for demo purpose
-        break;
-      }
-    }
-
-    if (pathParamStart) {
-      return element
-    }
-  }
-}
 
 module.exports = Resource 

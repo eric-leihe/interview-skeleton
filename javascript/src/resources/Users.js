@@ -1,23 +1,22 @@
 const Resource = require('../Resource')
 
-const resource = Resource('users', {
+const resource = Resource('users', 'user', {
   list: {
     desc: "List users of your PagerDuty account, optionally filtered by a search query.",
     execute: function (options = {}, params, callback) {
-      resource.client.http_get(resource.baseUrl(), options, params, callback)
+      resource.client.http_get(resource.getTargetUrl(params), options, callback)
     }
   },
   show: {
     desc: "Get details about an existing user.",
     execute: function (options = {}, params, callback) {
-      const commandUrl = new URL(`${params.path}`, `${resource.baseUrl()}/`).toString()
-      resource.client.http_get(commandUrl, options, params, callback)
+      resource.client.http_get(resource.getTargetUrl(params), options, callback)
     }
   },
   create: {
     desc: 'Create a new user.',
     execute: function (options = {}, params, callback) {
-      resource.client.http_post(resource.baseUrl(), options, params.payload, callback)
+      resource.client.http_post(resource.getTargetUrl(params), options, params, callback)
     }
   }
 })
