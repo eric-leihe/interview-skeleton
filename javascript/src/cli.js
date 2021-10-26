@@ -32,7 +32,7 @@ readcommand.loop({ ps1: 'PagerDuty> '}, function(err, args, str, next) {
       const resource = endpoints.get(resourceName)
 
       if (!resource) {
-        throw Error(`Unknown resource '${resource}'. Please use 'commands list' to check all supported resources.`)
+        throw Error(`Unknown resource '${resourceName}'. Please use 'commands list' to check all supported resources.`)
       }
 
       resource.execute(command, 'u+KQ19ypt4SsAs6-8zLg', paramParser(params), (err, data) => {
@@ -45,6 +45,7 @@ readcommand.loop({ ps1: 'PagerDuty> '}, function(err, args, str, next) {
       })
     } catch (e) {
       console.error("Encountered an error trying to execute command: \n", e)
+      return next()
     } 
   }
   return inputCallback(args);

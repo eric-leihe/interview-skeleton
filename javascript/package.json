@@ -1,8 +1,8 @@
 {
-  "name": "javascript",
+  "name": "pagerduty-cli",
   "version": "1.0.0",
   "description": "",
-  "main": "cli.js",
+  "main": "src/cli.js",
   "jest": {
     "verbose": true,
     "transform": {
@@ -13,6 +13,9 @@
     "cli": "./src/cli.js",
     "test": "node node_modules/.bin/jest",
     "build": "rollup -c rollup.config.js"
+  },
+  "bin": {
+    "pagerduty": "src/cli.js"
   },
   "keywords": [],
   "author": "",

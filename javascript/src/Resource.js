@@ -48,10 +48,10 @@ Resource.prototype.getTargetUrl = function (params) {
 
 Resource.prototype.execute = function (command, token, params, cb) {
   try {
-    const commandHandler = this.commands[command]
+    const commandHandler = this.commands[command] || this.commands['help']
 
     if (!commandHandler) {
-      throw Error(`Unrecognized command: '${command}'. This resource only supports commands: ${JSON.stringify(this.commandNames())}`)
+      return cb(null, `Usage: ${this.name} ${Object.keys(this.commands).join("|")} -h headers -p path -q key=value -d data`)
     }
 
     // Merge headers from command line and authorization token into options object
@@ -66,7 +66,5 @@ Resource.prototype.execute = function (command, token, params, cb) {
     cb(err) 
   }
 }
-
-
 
 module.exports = Resource 

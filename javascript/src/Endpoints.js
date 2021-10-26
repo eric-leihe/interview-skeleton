@@ -21,10 +21,15 @@ const endpoints = {
 
 const commandsResource = Resource('commands', 'command', {
   'list': {
-    path: '', // Relative path to the resource base URL
     desc: "List all of your account's abilities, by name.",
     execute: function (options = {}, params, callback) {
       return callback(null, JSON.stringify(endpoints.list()))
+    }
+  },
+  'help': {
+    desc: "Provide help about how to use this resource",
+    execute: function (options = {}, params, callback) {
+      return callback(null, `Usage: ${commandsResource.name} ${Object.keys(commandsResource.commands).join("|")}`)
     }
   }
 })
