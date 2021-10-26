@@ -59,6 +59,7 @@ module.exports = {
     const baseUrl = new URL(url)
 
     console.log("\nSending 'POST' request to URL : " + url)
+    
     fetch(baseUrl.toString(), _options)
       .then(res => Promise.all([res.status, res.json()]))
       .then(([httpStatusCode, jsonData]) => {

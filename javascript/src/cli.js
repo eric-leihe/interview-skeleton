@@ -8,7 +8,7 @@ endpoints.init(httpClient)
 
 var sigints = 0;
 
-readcommand.loop(function(err, args, str, next) {
+readcommand.loop({ ps1: 'PagerDuty> '}, function(err, args, str, next) {
   if (err && err.code !== 'SIGINT') {
       throw err;
   } else if (err) {
@@ -35,7 +35,7 @@ readcommand.loop(function(err, args, str, next) {
         throw Error(`Unknown resource '${resource}'. Please use 'commands list' to check all supported resources.`)
       }
 
-      resource.execute(command, { headers: { 'Authorization': 'Token token=u+KQ19ypt4SsAs6-8zLg' } }, paramParser(params), (err, data) => {
+      resource.execute(command, 'u+KQ19ypt4SsAs6-8zLg', paramParser(params), (err, data) => {
         if (err != null) {
           console.error(`Encountered an error trying to make a request: ${err.message}. \n`, data);
         } else {

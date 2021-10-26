@@ -46,7 +46,7 @@ Resource.prototype.getTargetUrl = function (params) {
   return targetUrl
 }
 
-Resource.prototype.execute = function (command, options, params, cb) {
+Resource.prototype.execute = function (command, token, params, cb) {
   try {
     const commandHandler = this.commands[command]
 
@@ -54,6 +54,8 @@ Resource.prototype.execute = function (command, options, params, cb) {
       throw Error(`Unrecognized command: '${command}'. This resource only supports commands: ${JSON.stringify(this.commandNames())}`)
     }
 
+    // Merge headers from command line and authorization token into options object
+    const options = { headers: { 'Authorization': `Token token=${token}` } }
     const headers = params.headers
     if (headers) {
       options.headers = Object.assign(options.headers, headers)

@@ -9,8 +9,8 @@ const resource = Resource('incidents', 'incident', {
   },
   show: {
     desc: "Show detailed information about an incident.",
-    execute: function (url, options = {}, params, callback) {
-      resource.client.http_get(url, options, callback)
+    execute: function (options = {}, params, callback) {
+      resource.client.http_get(resource.getTargetUrl(params), options, callback)
     }
   },
   create: {
